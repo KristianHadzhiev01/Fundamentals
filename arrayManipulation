@@ -1,0 +1,345 @@
+package Exams;
+
+import java.util.Arrays;
+import java.util.Scanner;
+
+public class P06ArrayManipulator {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        String input = scanner.nextLine();
+        String secondInput = scanner.nextLine();
+        String[] commandForMethods = secondInput.split(" ");
+        int[] numbers = Arrays.stream(input.split(" "))
+                .mapToInt(Integer::parseInt).toArray();
+        while (!secondInput.equals("end")) {
+            String[] command = secondInput.split(" ");
+            switch (command[0]) {
+                case "exchange":
+                    if (Integer.parseInt(command[1]) >numbers.length-1) {
+                        System.out.println("Invalid index");
+                        break;
+                    }else {
+                        arrayChanger(numbers, command);
+                    }
+                    break;
+                case "max":
+                    maxOddOrEvenIndexFinder(numbers, command);
+                    break;
+                case "min":
+                    minOddOrEvenFinder(numbers, command);
+                    break;
+                case "first":
+                    firstOddOrEven(numbers, command);
+                    break;
+                case "last":
+                    if (command[2].equals("even")) {
+                        findLastEven(numbers, command);
+                    } else if (command[2].equals("odd")) {
+                        findLastOdd(numbers, command);
+                    }
+            }
+            secondInput = scanner.nextLine();
+        }
+        for (int i = 0; i < numbers.length; i++) {
+            if (i == 0) {
+                System.out.printf("[%d, ", numbers[i]);
+            } else if (i == numbers.length - 1) {
+                System.out.printf("%d]", numbers[i]);
+            } else
+                System.out.printf("%d, ", numbers[i]);
+        }
+    }
+    public static void arrayChanger(int[] numbers, String[] input) {
+        int splitIndex = Integer.parseInt(input[1]);
+        int arrayLengthIndex = splitIndex + 1;
+        boolean isValid = true;
+
+            int[] firstHalf = new int[arrayLengthIndex];
+            int[] secondHalf = new int[numbers.length - arrayLengthIndex];
+            for (int i = 0; i < numbers.length; i++) {
+                firstHalf[i] = numbers[i];
+                if (i == splitIndex) {
+                    break;
+                }
+            }
+            int index = 0;
+            for (int i = arrayLengthIndex; i < numbers.length; i++) {
+                secondHalf[index] = numbers[i];
+                index++;
+            }
+            int secondIndex = 0;
+            for (int i = 0; i < numbers.length; i++) {
+                if (i < secondHalf.length) {
+                    numbers[i] = secondHalf[i];
+                } else {
+                    numbers[i] = firstHalf[secondIndex];
+                    secondIndex++;
+                }
+
+            }
+        }
+
+    public static void maxOddOrEvenIndexFinder(int[] numbers, String[] input) {
+        int currentBiggest = 0;
+        int biggestNumberIndex = 0;
+        int oddCounter = 0;
+        int evenCounter = 0;
+        boolean isValid = false;
+        switch (input[1]) {
+            case "even":
+                for (int i = 0; i < numbers.length; i++) {
+                    int currentNumber = 0;
+                    if (numbers[i] % 2 == 0) {
+                        evenCounter++;
+                        currentNumber = numbers[i];
+                    }
+                    if (currentBiggest <= currentNumber) {
+                        currentBiggest = currentNumber;
+                        biggestNumberIndex = i;
+                    }
+                }
+                if (evenCounter == 0) {
+                    isValid = true;
+                    break;
+                }
+                break;
+            case "odd":
+                for (int i = 0; i < numbers.length; i++) {
+                    int currentNumber = 0;
+                    if (numbers[i] % 2 != 0) {
+                        oddCounter++;
+                        currentNumber = numbers[i];
+                    }
+                    if (currentBiggest <= currentNumber) {
+                        currentBiggest = currentNumber;
+                        biggestNumberIndex = i;
+                    }
+                }
+                if (oddCounter == 0) {
+
+                    isValid = true;
+                    break;
+                }
+                break;
+        }
+        if (!isValid) {
+            System.out.println(biggestNumberIndex);
+        } else {
+            System.out.println("No matches");
+        }
+
+    }
+    public static void minOddOrEvenFinder(int[] numbers, String[] input) {
+        int oddCounter = 0;
+        int evenCounter = 0;
+        int currentIndex = 0;
+        boolean isValid = false;
+        int currentMin = Integer.MAX_VALUE;
+        switch (input[1]) {
+            case "odd":
+                int currentNum = 0;
+                for (int i = 0; i < numbers.length; i++) {
+                    if (numbers[i] % 2 != 0) {
+                        oddCounter++;
+                        currentNum = numbers[i];
+                        if (currentMin >= currentNum) {
+                            currentMin = currentNum;
+                            currentIndex = i;
+                        }
+                    }
+                }
+                if (oddCounter == 0) {
+                    isValid = true;
+                    break;
+                }
+                break;
+            case "even":
+                for (int i = 0; i < numbers.length; i++) {
+                    if (numbers[i] % 2 == 0) {
+                        evenCounter++;
+                        currentNum = numbers[i];
+                        if (currentMin >= currentNum) {
+                            currentMin = currentNum;
+                            currentIndex = i;
+                        }
+                    }
+                }
+                if (evenCounter == 0) {
+                    isValid = true;
+                    break;
+                }
+                break;
+        }
+        if (!isValid) {
+            System.out.println(currentIndex);
+        } else
+            System.out.println("No matches");
+    }
+    public static void firstOddOrEven(int[] numbers, String[] input) {
+        switch (input[2]) {
+            case "even":
+                boolean isValid = false;
+                int neededCount = Integer.parseInt(input[1]);
+                if (Integer.parseInt(input[1]) > numbers.length) {
+                    System.out.println("Invalid count");
+                    break;
+                }
+                int evenCount = -0;
+                for (int i = 0; i <numbers.length; i++) {
+                    if (numbers[i] % 2 ==0){
+                        evenCount++;
+                    }
+                }
+                int[] evenNumbersArr = new int[Math.min(evenCount ,neededCount)];
+                int index = 0;
+                for (int i = 0; i < evenNumbersArr.length; i++) {
+                    for (int number : numbers) {
+                        if (number % 2 == 0 && index < evenNumbersArr.length) {
+                            evenNumbersArr[index] = number;
+                            index++;
+                        }
+                    }
+                }
+                if (evenNumbersArr[0] == 0) {
+                    isValid = true;
+                }
+                if (isValid) {
+                    System.out.println("[]");
+                } else {
+                    System.out.print("[");
+                    for (int i = 0; i < evenNumbersArr.length; i++) {
+                        if (i == evenNumbersArr.length-1){
+                            System.out.print(evenNumbersArr[i]);
+                        }else
+                            System.out.print(evenNumbersArr[i] + ", ");
+                    }
+                    System.out.println("]");
+                }
+                break;
+            case "odd":
+                isValid = false;
+                int neededOddCount =Integer.parseInt(input[1]);
+                if (neededOddCount > numbers.length) {
+                    System.out.println("Invalid count");
+                    break;
+                }
+                int oddNumberCounter = 0;
+                for (int i = 0; i <numbers.length; i++) {
+                    if (numbers[i] % 2!= 0){
+                        oddNumberCounter ++;
+                    }
+                }
+                int[] oddNumbersArr = new int[Math.min(oddNumberCounter,neededOddCount)];
+                int oddIndex = 0;
+                for (int i = 0; i < oddNumbersArr.length; i++) {
+                    for (int number : numbers) {
+                        if (number % 2 != 0 && oddIndex < oddNumbersArr.length) {
+                            oddNumbersArr[oddIndex] = number;
+                            oddIndex++;
+                        }
+                    }
+                    if (oddNumbersArr[0] == 0) {
+                        isValid = true;
+                    }
+                }
+                if (isValid) {
+                    System.out.println("[]");
+                } else {
+                    System.out.print("[");
+                    for (int i = 0; i < oddNumbersArr.length; i++) {
+                        if (i == oddNumbersArr.length-1){
+                            System.out.printf("%d",oddNumbersArr[i]);
+                        }else
+                            System.out.print(oddNumbersArr[i] + ", ");
+                    }
+                }
+                System.out.println("]");
+                break;
+        }
+    }
+    public static void findLastEven(int[] inputAsArray, String[] input) {
+        int neededCount = Integer.parseInt(input[1]);
+        if (neededCount > inputAsArray.length) {
+            System.out.println("Invalid count");
+        } else {
+            int countEven = 0;
+            for (int i = 0; i <= inputAsArray.length - 1; i++) {
+                if (inputAsArray[i] % 2 == 0) {
+                    countEven++;
+                }
+            }
+            int[] array = new int[Math.min(countEven, neededCount)];
+            if (array.length > 0) {
+                int index = 0;
+                for (int i = inputAsArray.length - 1; i >= 0; i--) {
+                    if (inputAsArray[i] % 2 == 0) {
+                        array[index] = inputAsArray[i];
+                        index++;
+                        if (index > array.length - 1) {
+                            break;
+                        }
+                    }
+                }
+                int[] reversedArray = new int[array.length];
+                for (int i = 0; i <= reversedArray.length - 1; i++) {
+                    reversedArray[i] = array[array.length - (i + 1)];
+                }
+                System.out.print("[");
+                for (int i = 0; i <= reversedArray.length - 1; i++) {
+                    if (i == reversedArray.length - 1) {
+                        System.out.print(reversedArray[i]);
+                    } else {
+                        System.out.print(reversedArray[i] + ", ");
+                    }
+                }
+                System.out.println("]");
+            } else {
+                System.out.println("[]");
+            }
+        }
+    }
+    public static void findLastOdd(int[] numbers, String[] input) {
+        int neededCount = Integer.parseInt(input[1]);
+        if (neededCount > numbers.length) {
+            System.out.println("Invalid count");
+        } else {
+            int countEven = 0;
+            for (int i = 0; i <= numbers.length - 1; i++) {
+                if (numbers[i] % 2 != 0) {
+                    countEven++;
+                }
+            }
+            int[] array = new int[Math.min(countEven, neededCount)];
+            if (array.length > 0) {
+                int index = 0;
+                for (int i = numbers.length - 1; i >= 0; i--) {
+                    if (numbers[i] % 2 != 0) {
+                        array[index] = numbers[i];
+                        index++;
+                        if (index > array.length - 1) {
+                            break;
+                        }
+                    }
+                }
+                int[] reversedArray = new int[array.length];
+                for (int i = 0; i <= reversedArray.length - 1; i++) {
+                    reversedArray[i] = array[array.length - (i + 1)];
+                }
+                System.out.print("[");
+                for (int i = 0; i <= reversedArray.length - 1; i++) {
+                    if (i == reversedArray.length - 1) {
+                        System.out.print(reversedArray[i]);
+                    } else {
+                        System.out.print(reversedArray[i] + ", ");
+                    }
+                }
+                System.out.println("]");
+            } else {
+                System.out.println("[]");
+            }
+        }
+    }
+}
+
+
+
